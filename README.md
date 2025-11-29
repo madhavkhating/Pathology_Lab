@@ -20,5 +20,7 @@ Technologies Used: The project is built using the following technologies:
 1.TBD
 
 Contact Project Link: github.com
+
 Your Name: mr.madhavk6@gmail.com 
+
 LinkedIn: (https://www.linkedin.com/in/madhav-khating/)
