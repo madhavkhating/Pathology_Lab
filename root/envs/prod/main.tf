@@ -109,4 +109,4 @@ data "aws_ami" "rhel" {
     values = ["ebs"]
   }
 
-  }
+}
