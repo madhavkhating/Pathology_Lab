@@ -33,10 +33,9 @@ resource "aws_subnet" "private_2" {
 
 # Launch Template for RHEL EC2 instances
 resource "aws_launch_template" "rhel" {
-  name_prefix   = "pathology-lab-rhel-"
-  image_id      = data.aws_ami.rhel.id
-  instance_type = "t3.medium"
-
+  name_prefix            = "pathology-lab-rhel-"
+  image_id               = data.aws_ami.rhel.id
+  instance_type          = "t4g.small"
   vpc_security_group_ids = [aws_security_group.rhel.id]
 
   tag_specifications {
@@ -109,4 +108,5 @@ data "aws_ami" "rhel" {
     name   = "root-device-type"
     values = ["ebs"]
   }
-}
+
+  }
