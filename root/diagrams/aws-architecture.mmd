@@ -1,0 +1,60 @@
+%% Mermaid diagram of the current AWS architecture (high-level)
+%% Render in VS Code with 'Markdown Preview Mermaid Support' or use mermaid-cli (`mmdc`).
+
+flowchart LR
+  subgraph VPC["VPC: prod-vpc (10.0.0.0/16)"]
+    direction TB
+    IGW["Internet Gateway"]
+    subgraph PUB[Public Subnets]
+      PS1["Public Subnet 1\n10.0.1.0/24"]
+      PS2["Public Subnet 2\n10.0.2.0/24"]
+    end
+    subgraph NAT["NAT Gateways"]
+      NAT1["NAT Gateway 1"]
+      NAT2["NAT Gateway 2"]
+    end
+    subgraph PVT[Private Subnets]
+      PR1["Private Subnet 1\n10.0.11.0/24"]
+      PR2["Private Subnet 2\n10.0.12.0/24"]
+    end
+    RT_PUB["Public Route Table"]
+    RT_PRIV1["Private Route Table 1"]
+    RT_PRIV2["Private Route Table 2"]
+  end
+
+  IGW --> RT_PUB
+  RT_PUB --> PS1
+  RT_PUB --> PS2
+
+  PS1 --> NAT1
+  PS2 --> NAT2
+  NAT1 --> PR1
+  NAT2 --> PR2
+
+  PR1 --> RT_PRIV1
+  PR2 --> RT_PRIV2
+
+  subgraph COMPUTE["Compute (ASG)"]
+    LT["Launch Template\n(t3.small, RHEL x86_64)"]
+    ASG["Auto Scaling Group\npathology-lab-rhel-asg"]
+    SG["Security Group\nrhel-sg (SSH) "]
+  end
+
+  ASG --> LT
+  ASG --> SG
+  ASG --> PR1
+  ASG --> PR2
+
+  RDS["RDS MySQL (placeholder)"]
+  S3["S3 Backup Bucket (placeholder)"]
+
+  RDS --> PR1
+  RDS --> PR2
+  ASG --> RDS
+  ASG --> S3
+
+  classDef aws fill:#f3f4f6,stroke:#111827,stroke-width:1px;
+  class VPC,IGW,PS1,PS2,NAT1,NAT2,PR1,PR2,RT_PUB,RT_PRIV1,RT_PRIV2,LT,ASG,SG,RDS,S3 aws;
+
+  %% Notes
+  click LT "" "Launch template defined in top-level config"
